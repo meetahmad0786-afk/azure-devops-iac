@@ -19,6 +19,7 @@ jobs:
   # ============================================================
   # SCANNING
   # ============================================================
+
   scanning:
     name: Terraform Scanning
     runs-on: ubuntu-latest
@@ -71,6 +72,7 @@ jobs:
   # ============================================================
   # PLAN
   # ============================================================
+
   plan:
     name: Terraform Plan
     runs-on: ubuntu-latest
@@ -86,6 +88,17 @@ jobs:
         with:
           terraform_version: ${{ env.TF_VERSION }}
 
+      # ---------------- Azure Login ----------------
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # ---------------- Terraform ----------------
+
       - name: Terraform Init
         working-directory: ./Parent_module
         run: terraform init -backend=false
@@ -99,6 +112,7 @@ jobs:
   # APPLY
   # Only MAIN branch
   # ============================================================
+
   apply:
     name: Terraform Apply
     runs-on: ubuntu-latest
@@ -115,6 +129,17 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: ${{ env.TF_VERSION }}
+
+      # ---------------- Azure Login ----------------
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # ---------------- Terraform ----------------
 
       - name: Terraform Init
         working-directory: ./Parent_module
